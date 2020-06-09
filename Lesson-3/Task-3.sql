@@ -5,7 +5,7 @@ USE vk;
 CREATE TABLE users (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, 
   email VARCHAR(100) NOT NULL UNIQUE,
-  phone VARCHAR(20) NOT NULL UNIQUE,
+  phone VARCHAR(16) NOT NULL UNIQUE COMMENT "<--- Многовато 100 символов",
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,  
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );  
@@ -26,7 +26,7 @@ CREATE TABLE messages (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, 
   from_user_id INT UNSIGNED NOT NULL,
   to_user_id INT UNSIGNED NOT NULL,
-  body TEXT NOT NULL,
+  body VARCHAR(4096) NOT NULL "<--- TEXT может тоже избыточен. В вк допустимо 4096 символов",
   is_important BOOLEAN,
   is_delivered BOOLEAN,
   created_at DATETIME DEFAULT NOW()
@@ -44,7 +44,7 @@ CREATE TABLE friendship (
 CREATE TABLE friendship_user (
   user_id INT UNSIGNED NOT NULL COMMENT "<--- Для using_id нежелательно дублировать отношения между двум сторонами. Вероятней всего необходимо задать friendship id и создать таблицу ссылок на одни и теже отношения. При изменении статуса у всех будут согласованные данные. Это даст возможность индексировать только 1 колонкую",
   friendship_id INT UNSIGNED NOT NULL,
-  communitie_id INT,
+  communitie_id INT COMMENT "<--- Дополнил тк при такой конфигурации вполне вероятно переростание из дружбы в группы (семьи, друзей, единомышлиников, компаний и т.д.) тк число может не ограничено если только не реализовать эту логику на стороне программного обеспечения сервера",
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT "<--- created_at и requested_at выполняють одну и туже функцию",  
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT "<-- Для администрировании поможет",
   PRIMARY KEY (user_id, friendship_id)
@@ -53,7 +53,7 @@ CREATE TABLE friendship_user (
 CREATE TABLE friendship_statuses (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(150) NOT NULL UNIQUE,
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,  
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP  
 );
 
@@ -81,6 +81,7 @@ CREATE TABLE media (
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
 
 CREATE TABLE media_user (
   user_id INT UNSIGNED NOT NULL COMMENT "<--- Явное дублирование черезмерного объема информаци. Необходимо создать таблицу сопоставления user_id --> media_id_to_user_id",
