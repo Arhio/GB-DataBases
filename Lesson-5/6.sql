@@ -1,1 +1,1 @@
-SELECT DAYNAME(STR_TO_DATE(CONCAT(YEAR(NOW()), '-', MONTH(birthday), '-', DAY(birthday)), '%Y-%m-%d')) AS day, COUNT(*) FROM profiles GROUP BY day;
+SELECT AVG(TIMESTAMPDIFF(YEAR, profiles.birthday, NOW())) AS avg_age FROM users, profiles WHERE users.id = profiles.user_id ;
