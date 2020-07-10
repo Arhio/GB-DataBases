@@ -113,5 +113,5 @@ HGET name_to_email a
 HGET email_to_name a@ru
 
 -- 3. ќрганизуйте хранение категорий и товарных позиций учебной базы данных shop в —”Ѕƒ MongoDB.
-
-
+db.shop.insert({name: 'ѕроцессоры', products: [{name: 'AMD Sempron 2650 BOX', discription: 'AM1, 2 x 1450 ћ√ц, L2 - 1 ћЅ, 1хDDR3-1333 ћ√ц, Radeon HD 8240, TDP 25 ¬т, кулер', price: '1399', created_at: Date(), update_at: Date() }, {name: 'AMD Athlon X4 840 OEM', discription: 'FM2+, 4 x 3100 ћ√ц, L2 - 4 ћЅ, 2хDDR3-2133 ћ√ц, TDP 65 ¬т', price: '1699', created_at: Date(), update_at: Date() }, {name: 'Intel Celeron G4920 OEM', discription: 'LGA 1151-v2, 2 x 3200 ћ√ц, L2 - 512  Ѕ, L3 - 2 ћЅ, 2хDDR4-2400 ћ√ц, Intel UHD Graphics 610, TDP 54 ¬т', price: '1899', created_at: Date(), update_at: Date() } ] , created_at: Date() }, {name: '¬идеокарты', products: [ {name: 'INNO3D GeForce GT 710 Silent LP', discription: 'PCI-E 2.0, 1 √Ѕ GDDR3, 64 бит, 954 ћ√ц, HDMI, VGA (D-Sub), DVI-D', price: '2799', created_at: Date(), update_at: Date() }, {name: 'MSI GeForce GT 710 Silent LP', discription: 'PCI-E 2.0, 1 √Ѕ GDDR3, 64 бит, 954 ћ√ц, HDMI, VGA (D-Sub), DVI-D', price: '2799', created_at: Date(), update_at: Date() }, {name: 'GIGABYTE GeForce GT 710', discription: 'PCI-E 2.0, 1 √Ѕ GDDR5, 64 бит, 954 ћ√ц, HDMI, DVI-I', price: '2850', created_at: Date(), update_at: Date() } ] , created_at: Date() } )
+db.shop.find()
