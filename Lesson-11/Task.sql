@@ -5,17 +5,20 @@ SELECT DISTINCT communities_.name,
 	COUNT(*) OVER() / (SELECT COUNT(*) FROM communities) AS "average",
 	MIN(profiles.birthday) OVER w AS min_bithday_user,
 	MAX(profiles.birthday) OVER w AS max_bithday_user,
-	COUNT(*) OVER w AS total_communities,
-	COUNT(*) OVER() AS total_system,
-	COUNT(*) OVER w / COUNT(*) OVER() * 100 AS "%%"
+	COUNT(profiles.birthday) OVER w AS total_communities,
+	COUNT(profiles.birthday) OVER() AS total_system,
+	COUNT(profiles.birthday) OVER w / COUNT(profiles.birthday) OVER() * 100 AS "%%"
 	FROM ((SELECT id, name FROM communities
-				 UNION 
-				 SELECT 0 AS id, NULL AS name) AS communities_
-		LEFT JOIN communities_users 
+				 UNION
+				 SELECT NULL AS id, NULL AS name) AS communities_
+		LEFT JOIN communities_users
 			ON communities_users.community_id = communities_.id
-		LEFT JOIN profiles 
-			ON profiles.user_id = communities_users.user_id)
+		LEFT JOIN profiles
+			ON profiles.user_id = communities_users.user_id
+				OR (profiles.user_id NOT IN (SELECT DISTINCT user_id FROM communities_users)
+					AND communities_.id IS NULL))
 			WINDOW w AS (PARTITION BY communities_.id);
+		
 		
 SELECT id, name FROM communities
  UNION 
