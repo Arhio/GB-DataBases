@@ -21,16 +21,20 @@ CREATE INDEX posts_user_id_idx ON posts(user_id);
 
 
 -- 2 --
-SELECT DISTINCT communities.name,
-	SUM(1) OVER() / (SELECT COUNT(*) FROM communities) AS "average",
+SELECT DISTINCT communities_.name,
+	COUNT(*) OVER() / (SELECT COUNT(*) FROM communities) AS "average",
 	MIN(profiles.birthday) OVER w AS min_bithday_user,
 	MAX(profiles.birthday) OVER w AS max_bithday_user,
-	COUNT(1) OVER w AS total_communities,
-	COUNT(1) OVER() AS total_system,
-	COUNT(1) OVER w / COUNT(1) OVER() * 100 AS "%%"
-	FROM (communities 
-		LEFT JOIN communities_users 
-			ON communities_users.community_id = communities.id
-		RIGHT JOIN profiles 
-			ON profiles.user_id = communities_users.user_id)
-			WINDOW w AS (PARTITION BY communities.id);
+	COUNT(profiles.birthday) OVER w AS total_communities,
+	COUNT(profiles.birthday) OVER() AS total_system,
+	COUNT(profiles.birthday) OVER w / COUNT(profiles.birthday) OVER() * 100 AS "%%"
+	FROM ((SELECT id, name FROM communities
+				 UNION
+				 SELECT NULL AS id, NULL AS name) AS communities_
+		LEFT JOIN communities_users
+			ON communities_users.community_id = communities_.id
+		LEFT JOIN profiles
+			ON profiles.user_id = communities_users.user_id
+				OR (profiles.user_id NOT IN (SELECT DISTINCT user_id FROM communities_users)
+					AND communities_.id IS NULL))
+			WINDOW w AS (PARTITION BY communities_.id);
